@@ -1,0 +1,17 @@
+##############################################################################################################################
+% Writter Abhay Vashist, Data: 2/23/2018,   
+##############################################################################################################################
+
+% the VideoReader create a object called video Object
+videoObject = VideoReader('Testfilerun.mov');  % The name of the video file being call is "Testfilerun.mov"
+    imageData = read(videoObject); 
+    numFrames = get(videoObject, 'NumberOfFrames');
+       Heig= get(videoObject, 'Height');
+       Wid= get(videoObject, 'Width');
+       Rateframe= get(videoObject, 'FrameRate');
+       time=get(videoObject, 'Duration');
+        imagedata=read(videoObject,10);
+        figure
+        imshow(read(videoObject,46))
+        figure
+        imshow(imageData(:, :, :, 46))
