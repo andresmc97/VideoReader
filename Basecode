@@ -1,36 +1,36 @@
 clc
 clear
 close all
+tic
 %the VideoReader create a object called video Object
-videoObject = VideoReader('Testfilerun.mov');  % The name of the video file being call is "Testfilerun.mov"
+videoObject = VideoReader('video.mp4');  % The name of the video file being call is "Testfilerun.mov"
     imageData = read(videoObject); 
     numFrames = get(videoObject, 'NumberOfFrames');
        Heig= get(videoObject, 'Height');
        Wid= get(videoObject, 'Width');
        Rateframe= get(videoObject, 'FrameRate');
        time=get(videoObject, 'Duration');
-       for i =1:numFrames
-       listframes(i) = i;
+       for i =1:numFrames;
        imagedata = read(videoObject,i);
        intensitymatrix(:,:,i) = imagedata(:,:,1); %0.2989*imagedata(:,:,1) + 0.5870*imagedata(:,:,2)+ 0.1140* imagedata(:,:,3);
-       window1=intensitymatrix(450:500,450:500,i);
+       window1=intensitymatrix(200:270,647:747,i);
        meanwindow(i)=mean(mean(window1));
        end
-       s = reshape(intensitymatrix(558,226,:),[1,numFrames]);
        figure
        plot([0:numFrames-1]/Rateframe,meanwindow);
 %Filering of sample data
 Fs = numFrames/time; %Sampling frequency (Hz) 
 Fn = Fs/2; %% Nyquist Frequency (Hz)
-Wp = [0.5   5]/Fn;                                          % Passband Frequency (Normalised)
-Ws = [0.3   5.2]/Fn;                                      % Stopband Frequency (Normalised)
+Wp = [.5   1.3]/Fn;                                          % Passband Frequency (Normalised)
+Ws = [.3   1.4]/Fn;                                      % Stopband Frequency (Normalised)
 Rp =   1;                                                   % Passband Ripple (dB)
 Rs = 50;                                                   % Stopband Ripple (dB)
 [n,Ws] = cheb2ord(Wp,Ws,Rp,Rs);                         % Filter Order
 [z,p,k] = cheby2(n,Rs,Ws);                              % Filter Design
 [sosbp,gbp] = zp2sos(z,p,k);                            % Convert To Second-Order-Section For Stability
 figure(2)
-freqz(sosbp, 2^16, Fs)                                  % Filter Bode Plot
+freqz(sosbp, 2^16, Fs);                                  % Filter Bode Plot
 s_filt = filtfilt(sosbp,gbp, meanwindow);                        % Filter Signal
 figure(3)
 plot([0:numFrames-1]/Rateframe, s_filt)
+toc
